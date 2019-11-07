@@ -7,6 +7,7 @@ import com.udacity.vehicles.client.prices.PriceClient;
 import com.udacity.vehicles.domain.car.Car;
 import com.udacity.vehicles.domain.car.CarRepository;
 import java.util.List;
+import java.util.Optional;
 
 import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.stereotype.Service;
@@ -45,16 +46,16 @@ public class CarService {
      * @return the requested car's information, including location and price
      */
     public Car findById(Long id) {
-        Car car = new Car();
+        Optional<Car> optCar=repository.findById(id);
         if (repository.findById(id) != null) {
-           car.setPrice(priceClient.getPrice(id));
-            car.setLocation(mapsClient.getAddress(repository.findById(id).get().getLocation()));
+            Car car=optCar.get();
+            return car;
         }else{
             throw new CarNotFoundException();
         }
 
 
-        return car;
+
     }
 
     /**
@@ -66,6 +67,7 @@ public class CarService {
         if (car.getId() != null) {
             return repository.findById(car.getId())
                     .map(carToBeUpdated -> {
+                        carToBeUpdated.setCondition(car.getCondition());
                         carToBeUpdated.setDetails(car.getDetails());
                         carToBeUpdated.setLocation(car.getLocation());
                         return repository.save(carToBeUpdated);
@@ -81,7 +83,10 @@ public class CarService {
      */
     public void delete(Long id) {
         if (repository.findById(id) != null){
-            repository.delete(findById(id));
+            Car car;
+            Optional<Car>optCar=repository.findById(id);
+            car=optCar.get();
+            repository.delete(car);
         } else throw new CarNotFoundException();
 
     }

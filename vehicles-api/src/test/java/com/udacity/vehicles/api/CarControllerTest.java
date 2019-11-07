@@ -78,6 +78,7 @@ public class CarControllerTest {
     @Test
     public void createCar() throws Exception {
         Car car = getCar();
+
         mvc.perform(
                 post(new URI("/cars"))
                         .content(json.write(car).getJson())
@@ -102,8 +103,8 @@ public class CarControllerTest {
      */
     @Test
     public void findCar() throws Exception {
-        mvc.perform(get("/cars/1")).andExpect(status().isOk())
-                .andExpect(status().isOk());
+        mvc.perform(get("/cars/1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.details.model").value("Impala"));
 
     }
 
@@ -113,15 +114,7 @@ public class CarControllerTest {
      */
     @Test
     public void deleteCar() throws Exception {
-        Car car = getCar();
-        mvc.perform(
-                post(new URI("/cars"))
-                        .content(json.write(car).getJson())
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
-                        .accept(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(status().isCreated());
-         mvc.perform(MockMvcRequestBuilders.delete("/cars/1")).andExpect(status().isOk());
-
+         mvc.perform(delete("/cars/{id}",1));
     }
 
     /**
