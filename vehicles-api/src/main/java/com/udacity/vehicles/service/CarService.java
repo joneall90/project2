@@ -3,7 +3,9 @@ package com.udacity.vehicles.service;
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.udacity.vehicles.VehiclesApiApplication;
 import com.udacity.vehicles.client.maps.MapsClient;
+import com.udacity.vehicles.client.prices.Price;
 import com.udacity.vehicles.client.prices.PriceClient;
+import com.udacity.vehicles.domain.Location;
 import com.udacity.vehicles.domain.car.Car;
 import com.udacity.vehicles.domain.car.CarRepository;
 import java.util.List;
@@ -47,8 +49,10 @@ public class CarService {
      */
     public Car findById(Long id) {
         Optional<Car> optCar=repository.findById(id);
-        if (repository.findById(id) != null) {
+        if (optCar.isPresent()) {
             Car car=optCar.get();
+            car.setLocation(mapsClient.getAddress(new Location()));
+            car.setPrice(priceClient.getPrice(id));
             return car;
         }else{
             throw new CarNotFoundException();

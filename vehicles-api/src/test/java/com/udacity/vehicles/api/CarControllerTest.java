@@ -4,9 +4,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.udacity.vehicles.client.maps.MapsClient;
@@ -116,7 +114,10 @@ public class CarControllerTest {
     public void deleteCar() throws Exception {
          mvc.perform(delete("/cars/{id}",1));
     }
-
+    @Test
+    public void updateCar() throws Exception {
+        mvc.perform(put("/cars/{id}",1)).andExpect(status().isOk());
+    }
     /**
      * Creates an example Car object for use in testing.
      * @return an example Car object
